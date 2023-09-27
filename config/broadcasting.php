@@ -38,9 +38,14 @@ return [
             'options' => [
                 'cluster' => env('PUSHER_APP_CLUSTER'),
                 'encrypted' => false,
-                'host' => env('PUSHER_HOST'),
+                'host' => "site.montyslocksmith.ca",
                 'port' => env('PUSHER_PORT'),
-                'scheme' => env('PUSHER_SCHEME')
+                'scheme' => env('PUSHER_SCHEME'),
+
+                'curl_options' => [
+                    CURLOPT_SSL_VERIFYHOST => 0,
+                    CURLOPT_SSL_VERIFYPEER => 0,
+                ],
             ],
         ],
 

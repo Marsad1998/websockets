@@ -22,12 +22,15 @@ window.Pusher = pusher;
 
 window.Echo = new Echo({
     broadcaster: "pusher",
-    key: "030d499953140b92dc21",
-    cluster: "mt1",
-    wsHost: window.location.hostname,
+    key: process.env.PUSHER_APP_KEY,
+    cluster: process.env.PUSHER_APP_CLUSTER,
+    // wsHost: window.location.hostname,
+    wsHost: "site.montyslocksmith.ca", // Your domain
     wsPort: 6001,
     forceTLS: false,
     disableStats: true,
+    encrypted: false,
+    enabledTransports: ["ws", "wss"],
 });
 
 window.Echo.channel("messages").listen("Notifications", (e) => {
