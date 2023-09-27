@@ -24,6 +24,7 @@ window.Echo = new Echo({
     broadcaster: "pusher",
     key: process.env.PUSHER_APP_KEY,
     cluster: process.env.PUSHER_APP_CLUSTER,
+    // wsHost: window.location.hostname,
     wsHost: "site.montyslocksmith.ca", // Your domain
     wsPort: 6001,
     forceTLS: false,
