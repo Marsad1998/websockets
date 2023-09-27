@@ -16,7 +16,7 @@ jobs:
 
       - name: 📂 Change working directory
         run: |
-          cd /site.montyslocksmith.ca/laravel
+          cd site.montyslocksmith.ca/laravel
           ls  # Optional: List files in the directory to confirm it exists
 
       - name: 📂 Sync folders and files to the server
