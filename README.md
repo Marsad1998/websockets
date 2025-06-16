@@ -1,66 +1,206 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# WebSockets Setup Guide for Bitnami/Laravel
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Overview
 
-## About Laravel
+This guide provides the complete configuration for setting up WebSockets in a Bitnami/Laravel environment using Laravel Reverb and Apache proxy configuration.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## ✅ Required Configuration Files
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 1. Apache WebSocket Configuration
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+**File:** `/opt/bitnami/apache2/conf/extra/httpd-websockets.conf` (New file)
 
-## Learning Laravel
+```apache
+<VirtualHost *:8081>
+    ProxyPass "/" "ws://localhost:8080/app/aaokmzip3cio74osv4im"
+    ProxyPassReverse "/" "ws://localhost:8080/app/aaokmzip3cio74osv4im"
+</VirtualHost>
+Listen 8081
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 2. Main Apache Configuration
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+**File:** `/opt/bitnami/apache2/conf/httpd.conf`
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Add at the bottom of the file:
 
-## Laravel Sponsors
+```apache
+Include conf/extra/httpd-websockets.conf
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 3. Laravel Reverb Configuration
 
-### Premium Partners
+**File:** `/opt/bitnami/projects/websockets/config/reverb.php`
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+Modify the allowed_origins section:
 
-## Contributing
+```php
+'allowed_origins' => [
+    'http://websock.leads.ae',
+    'https://websock.leads.ae',
+    'http://localhost'
+],
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 4. Supervisor Configuration
 
-## Code of Conduct
+**File:** `/etc/supervisor/conf.d/reverb.conf`
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Update the command line:
 
-## Security Vulnerabilities
+```text
+command=/opt/bitnami/php/bin/php /opt/bitnami/projects/websockets/artisan reverb:start --port=8080
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🔄 Files You Can Revert
 
-## License
+These files can return to their original state since we're using dedicated port 8081:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+-   `/opt/bitnami/apache2/conf/bitnami/bitnami.conf` (Remove WebSocket rules)
+-   `/opt/bitnami/apache2/conf/bitnami/bitnami-ssl.conf`
+
+## 🎯 Why This Configuration Works
+
+### 1. Isolation
+
+-   **Dedicated Port 8081**: Avoids conflicts with Bitnami's default VirtualHost configurations
+-   **Clean Separation**: WebSocket traffic is completely isolated from web traffic
+
+### 2. Simplicity
+
+-   **Direct Proxy**: Simple proxy configuration without complex URL rewrites
+-   **Minimal Changes**: Only 4 files need modification
+
+### 3. Security
+
+-   **Explicit Origin Whitelisting**: Only specified domains can establish WebSocket connections
+-   **Controlled Access**: Clear security boundaries
+
+### 4. Persistence
+
+-   **Supervisor Management**: Keeps Laravel Reverb running automatically
+-   **Auto-restart**: Service restarts on failure
+
+## 📊 Verification & Testing
+
+### WebSocket Connection Test
+
+```bash
+curl -i \
+  -H "Connection: Upgrade" \
+  -H "Upgrade: websocket" \
+  -H "Sec-WebSocket-Key: $(openssl rand -base64 16)" \
+  http://localhost:8081
+```
+
+**Expected Response:** HTTP 101 Switching Protocols
+
+### Service Status Commands
+
+```bash
+# Check Apache status
+sudo /opt/bitnami/ctlscript.sh status apache
+
+# Check Supervisor status
+sudo supervisorctl status reverb
+
+# Restart services
+sudo supervisorctl restart reverb
+sudo /opt/bitnami/ctlscript.sh restart apache
+```
+
+## 🚀 Implementation Steps
+
+1. **Create WebSocket Apache config:**
+
+    ```bash
+    sudo nano /opt/bitnami/apache2/conf/extra/httpd-websockets.conf
+    ```
+
+2. **Update main Apache config:**
+
+    ```bash
+    sudo nano /opt/bitnami/apache2/conf/httpd.conf
+    # Add: Include conf/extra/httpd-websockets.conf
+    ```
+
+3. **Configure Laravel Reverb:**
+
+    ```bash
+    sudo nano /opt/bitnami/projects/websockets/config/reverb.php
+    ```
+
+4. **Update Supervisor config:**
+
+    ```bash
+    sudo nano /etc/supervisor/conf.d/reverb.conf
+    ```
+
+5. **Restart services:**
+
+    ```bash
+    sudo supervisorctl reread
+    sudo supervisorctl update
+    sudo supervisorctl restart reverb
+    sudo /opt/bitnami/ctlscript.sh restart apache
+    ```
+
+6. **Verify configuration:**
+    ```bash
+    # Test WebSocket endpoint
+    curl -i -H "Connection: Upgrade" -H "Upgrade: websocket" \
+         -H "Sec-WebSocket-Key: $(openssl rand -base64 16)" \
+         http://localhost:8081
+    ```
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+1. **Port Already in Use:**
+
+    ```bash
+    sudo netstat -tlnp | grep :8081
+    sudo lsof -i :8081
+    ```
+
+2. **Apache Module Missing:**
+
+    ```bash
+    # Ensure proxy modules are enabled
+    sudo a2enmod proxy
+    sudo a2enmod proxy_http
+    sudo a2enmod proxy_wstunnel
+    ```
+
+3. **Supervisor Not Starting:**
+    ```bash
+    sudo supervisorctl tail reverb
+    sudo supervisorctl status
+    ```
+
+### Log Files
+
+-   **Apache Logs:** `/opt/bitnami/apache2/logs/error_log`
+-   **Laravel Logs:** `/opt/bitnami/projects/websockets/storage/logs/laravel.log`
+-   **Supervisor Logs:** `/var/log/supervisor/reverb.log`
+
+## 📝 Notes
+
+-   Replace `aaokmzip3cio74osv4im` with your actual Pusher app key
+-   Update domain names in `allowed_origins` to match your environment
+-   This configuration uses port 8080 for Reverb and 8081 for the Apache proxy
+-   The setup preserves Bitnami's default configuration while adding WebSocket support
+
+## 🔐 Security Considerations
+
+-   Always use HTTPS in production environments
+-   Restrict `allowed_origins` to your specific domains
+-   Consider implementing authentication for WebSocket connections
+-   Monitor WebSocket traffic and connections
+-   Regular security updates for all components
+
+---
+
+**Last Updated:** June 2025  
+**Tested Environment:** Bitnami LAMP Stack with Laravel 10+
