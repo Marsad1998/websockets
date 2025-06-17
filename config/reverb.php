@@ -77,10 +77,10 @@ return [
                 'allowed_origins' => [
                     'https://leadshub.ae',
                     'http://leadshub.ae',
-                    'https://test_crm.leadshub.ae',
-                    'http://test_crm.leadshub.ae',
-                    'https://testcrmbackend.leadshub.ae/',
-                    'http://testcrmbackend.leadshub.ae/',
+                    'https://testcrm.leadshub.ae',
+                    'http://testcrm.leadshub.ae',
+                    'https://testcrmbackend.leadshub.ae',
+                    'http://testcrmbackend.leadshub.ae',
                     'https://socket.leadshub.ae',
                     'http://54.174.251.252'
                 ],
