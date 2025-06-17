@@ -77,6 +77,10 @@ return [
                 'allowed_origins' => [
                     'https://leadshub.ae',
                     'http://leadshub.ae',
+                    'https://test_crm.leadshub.ae',
+                    'http://test_crm.leadshub.ae',
+                    'https://testcrmbackend.leadshub.ae/',
+                    'http://testcrmbackend.leadshub.ae/',
                     'https://websocket.leadshub.ae',
                     'http://54.174.251.252'
                 ],
