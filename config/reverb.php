@@ -85,7 +85,7 @@ return [
                 'max_message_size' => env('REVERB_APP_MAX_MESSAGE_SIZE', 10_000),
                 'options' => [
                     'host' => 'websocket.leadshub.ae',
-                    'useTLS' => false // Set true in production
+                    'useTLS' => true // Set true in production
                 ]
             ]
         ],
