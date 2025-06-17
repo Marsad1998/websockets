@@ -81,14 +81,14 @@ return [
                     'http://test_crm.leadshub.ae',
                     'https://testcrmbackend.leadshub.ae/',
                     'http://testcrmbackend.leadshub.ae/',
-                    'https://websocket.leadshub.ae',
+                    'https://socket.leadshub.ae',
                     'http://54.174.251.252'
                 ],
                 'ping_interval' => env('REVERB_APP_PING_INTERVAL', 60),
                 'activity_timeout' => env('REVERB_APP_ACTIVITY_TIMEOUT', 30),
                 'max_message_size' => env('REVERB_APP_MAX_MESSAGE_SIZE', 10_000),
                 'options' => [
-                    'host' => 'websocket.leadshub.ae',
+                    'host' => 'socket.leadshub.ae',
                     'useTLS' => true // Set true in production
                 ]
             ]
