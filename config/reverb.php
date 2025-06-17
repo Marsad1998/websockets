@@ -71,23 +71,21 @@ return [
 
         'apps' => [
             [
-                'key' => env('REVERB_APP_KEY'),
+                'key' => env('REVERB_APP_KEY'), // Ensure matches .env
                 'secret' => env('REVERB_APP_SECRET'),
                 'app_id' => env('REVERB_APP_ID'),
-                'options' => [
-                    'host' => env('REVERB_HOST'),
-                    'port' => env('REVERB_PORT', 443),
-                    'scheme' => env('REVERB_SCHEME', 'https'),
-                    'useTLS' => env('REVERB_SCHEME', 'https') === 'https',
+                'allowed_origins' => [
+                    'http://websocket.leadshub.ae',
+                    'https://websocket.leadshub.ae',
+                    'http://localhost:8081',
+                    env('APP_URL')
                 ],
-                // 'allowed_origins' => ['*'],
-                'allowed_origins' => ['http://localhost:5173'], // Add your React app's origin
-                'ping_interval' => env('REVERB_APP_PING_INTERVAL', 60),
-                'activity_timeout' => env('REVERB_APP_ACTIVITY_TIMEOUT', 30),
-                'max_message_size' => env('REVERB_APP_MAX_MESSAGE_SIZE', 10_000),
-            ],
+                'options' => [
+                    'host' => 'websocket.leadshub.ae',
+                    'useTLS' => false // Set true in production
+                ]
+            ]
         ],
-
     ],
 
 ];
