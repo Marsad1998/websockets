@@ -75,9 +75,7 @@ return [
                 'secret' => env('REVERB_APP_SECRET'),
                 'app_id' => env('REVERB_APP_ID'),
                 'allowed_origins' => [
-                    'http://websocket.leadshub.ae',
-                    'https://websocket.leadshub.ae',
-                    'http://localhost:8081',
+                    'http://leadshub.ae',
                     env('APP_URL')
                 ],
                 'ping_interval' => env('REVERB_APP_PING_INTERVAL', 60),
