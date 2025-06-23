@@ -81,8 +81,6 @@ return [
                     'http://testcrm.leadshub.ae',
                     'https://testcrmbackend.leadshub.ae',
                     'http://testcrmbackend.leadshub.ae',
-                    'https://socket.leadshub.ae',
-                    'http://54.174.251.252'
                 ],
                 'ping_interval' => env('REVERB_APP_PING_INTERVAL', 60),
                 'activity_timeout' => env('REVERB_APP_ACTIVITY_TIMEOUT', 30),
