@@ -27,18 +27,11 @@ return [
     */
 
     'servers' => [
-
         'reverb' => [
             'host' => env('REVERB_SERVER_HOST', '0.0.0.0'),
-            'port' => env('REVERB_SERVER_PORT', 8080),
+            'port' => env('REVERB_SERVER_PORT', 8081),
             'hostname' => env('REVERB_HOST'),
-            'options' => [
-                'tls' => [
-                    'local_cert' => '/opt/bitnami/letsencrypt/certificates/socket.leadshub.ae-combined.crt',
-                    'local_pk' => '/opt/bitnami/letsencrypt/certificates/socket.leadshub.ae.key',
-                    'verify_peer' => false
-                ],
-            ],
+            'options' => [],
             'max_request_size' => env('REVERB_MAX_REQUEST_SIZE', 10_000),
             'scaling' => [
                 'enabled' => env('REVERB_SCALING_ENABLED', false),
@@ -78,19 +71,28 @@ return [
                 'key' => env('REVERB_APP_KEY'), // Ensure matches .env
                 'secret' => env('REVERB_APP_SECRET'),
                 'app_id' => env('REVERB_APP_ID'),
-                'allowed_origins' => [
-                    'https://leadshub.ae',
-                    'http://leadshub.ae',
-                    'https://testcrm.leadshub.ae',
-                    'http://testcrm.leadshub.ae',
-                    'https://testcrmbackend.leadshub.ae',
-                    'http://testcrmbackend.leadshub.ae',
-                ],
+                'allowed_origins' => ['*'], // Allow all origins for development
+                // 'allowed_origins' => [
+                //     'https://leadshub.ae',
+                //     'http://leadshub.ae',
+                //     'https://testcrm.leadshub.ae',
+                //     'http://testcrm.leadshub.ae',
+                //     'https://testcrmbackend.leadshub.ae',
+                //     'http://testcrmbackend.leadshub.ae',
+
+                //     'http://localhost:5173',
+                //     'https://localhost:5173',
+                //     'https://127.0.0.1:5173',
+                //     'https://127.0.0.1:5173',
+
+                //     'https://newcrmbackend.ddev.site',
+                //     'http://newcrmbackend.ddev.site',
+                // ],
                 'ping_interval' => env('REVERB_APP_PING_INTERVAL', 60),
                 'activity_timeout' => env('REVERB_APP_ACTIVITY_TIMEOUT', 30),
                 'max_message_size' => env('REVERB_APP_MAX_MESSAGE_SIZE', 10_000),
                 'options' => [
-                    'host' => 'socket.leadshub.ae',
+                    'host' => 'websocke1.ddev.site',
                     'useTLS' => true // Set true in production
                 ]
             ]

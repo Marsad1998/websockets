@@ -7,8 +7,8 @@ xdebug_enabled: false
 additional_hostnames: []
 additional_fqdns: []
 database:
-    type: mariadb
-    version: "10.11"
+  type: mariadb
+  version: "10.11"
 use_dns_when_possible: true
 composer_version: "2"
 web_environment: []
@@ -227,7 +227,11 @@ disable_upload_dirs_warning: true
 # The default time that DDEV waits for all containers to become ready can be increased from
 # the default 120. This helps in importing huge databases, for example.
 
-#web_extra_exposed_ports:
+web_extra_exposed_ports:
+  - name: websocket
+    container_port: 8081
+    http_port: 8082 # Changed from 8081
+    https_port: 8083 # Changed from 8081
 #- name: nodejs
 #  container_port: 3000
 #  http_port: 2999
