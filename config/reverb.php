@@ -92,7 +92,7 @@ return [
                 'activity_timeout' => env('REVERB_APP_ACTIVITY_TIMEOUT', 30),
                 'max_message_size' => env('REVERB_APP_MAX_MESSAGE_SIZE', 10_000),
                 'options' => [
-                    'host' => 'https://websocket.leadshub.ae',
+                    'host' => 'websocket.leadshub.ae',
                     'useTLS' => true // Set true in production
                 ]
             ]
